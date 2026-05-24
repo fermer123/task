@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import ru.demo.task.domain.exeption.AccessDediedException;
 import ru.demo.task.domain.user.User;
 import ru.demo.task.service.AuthService;
 import ru.demo.task.service.UserService;
@@ -32,6 +33,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtResponse refresh(String refreshToken) {
-        return null;
+        try {
+            return jwtTokenProvider.refreshUserTokens(refreshToken);
+        } catch (AccessDediedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
