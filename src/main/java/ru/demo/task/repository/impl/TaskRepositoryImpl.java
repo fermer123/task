@@ -13,7 +13,48 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TaskRepositoryImpl implements TaskRepository {
     private final DataSourceConfig dataSourceConfig;
-    
+    private final String FIND_BY_ID = """
+            SELECT t.id as task_id,
+            	   t.title as task_title,
+            	   t.description as task_description,
+            	   t.expiration_date as task_expiration
+            from tasks t
+            where t.id = ?
+            """;
+
+    private final String FIND_ALL_BY_USER_ID = """
+            SELECT t.id as task_id,
+            	   t.title as task_title,
+            	   t.description as task_description,
+            	   t.expiration_date as task_expiration
+            from tasks t
+            left join users_tasks u on t.id = u.task_id
+            where t.id = ?
+            """;
+
+    private final String ASSIGNED_BY_USER_ID = """
+            INSERT INTO users_tasks(task_id, user_id)
+            VALUES (?, ?)
+            """;
+
+    private final String DELETE = """
+            DELETE from tasks
+            where id = ?
+            """;
+
+    private final String UPDATE = """
+            UPDATE tasks
+            SET title = ?,
+            description = ?,
+            expiration_date = ?,
+            status = ?
+            """;
+
+    private final String CREATE = """
+            INSERT INTO tasks(title, description, expiration_date, status)
+            VALUES(?,?,?,?)
+            """;
+
     @Override
     public Optional<Task> findById(Long id) {
         return Optional.empty();
