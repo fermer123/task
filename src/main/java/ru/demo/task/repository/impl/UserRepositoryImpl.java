@@ -1,5 +1,6 @@
 package ru.demo.task.repository.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.demo.task.domain.user.Role;
 import ru.demo.task.domain.user.User;
@@ -8,6 +9,7 @@ import ru.demo.task.repository.UserRepository;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findById(Long id) {

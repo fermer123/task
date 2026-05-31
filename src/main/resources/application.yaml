@@ -11,7 +11,7 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
       data-locations: classpath:demo_data.sql
-      continue-on-error: false
+      continue-on-error: true
 security:
   jwt:
     secret: YXNkYXNkenhkMTIzMTI0MzIhfn4xIUA0MTI0cWYxMzIzZjJ0

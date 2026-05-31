@@ -22,7 +22,6 @@ import ru.demo.task.web.security.JwtTokenProvider;
 @Configuration
 public class ApplicationConfig {
     private final ApplicationContext applicationContext;
-    private final JwtTokenProvider tokenProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,7 +34,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtTokenProvider tokenProvider) throws Exception {
         httpSecurity
                 // 1. Отключаем CSRF и настраиваем CORS через лямбды
                 .csrf(csrf -> csrf.disable())
