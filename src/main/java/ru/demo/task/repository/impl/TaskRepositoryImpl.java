@@ -2,10 +2,16 @@ package ru.demo.task.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.demo.task.domain.exeption.ResourceMappingException;
 import ru.demo.task.domain.task.Task;
+import ru.demo.task.repository.DataSourceConfig;
 import ru.demo.task.repository.TaskRepository;
-import ru.demo.task.repository.mappers.DataSourceConfig;
+import ru.demo.task.repository.mappers.TaskRowMapper;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,12 +63,30 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public Optional<Task> findById(Long id) {
-        return Optional.empty();
+        try {
+            Connection connection = dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID);
+            statement.setLong(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                return Optional.ofNullable(TaskRowMapper.mapRow(rs));
+            }
+        } catch (SQLException throwables) {
+            throw new ResourceMappingException(String.format("Error while finding user by id. Error сode %s", throwables.getErrorCode()));
+        }
     }
 
     @Override
     public List<Task> findAllByUserId(Long userId) {
-        return List.of();
+        try {
+            Connection connection = dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(FIND_ALL_BY_USER_ID);
+            statement.setLong(1, userId);
+            try (ResultSet rs = statement.executeQuery()) {
+                return TaskRowMapper.mapRows(rs);
+            }
+        } catch (SQLException throwables) {
+            throw new ResourceMappingException(String.format("Error while finding user by id. Error сode %s", throwables.getErrorCode()));
+        }
     }
 
     @Override

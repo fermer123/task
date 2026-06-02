@@ -1,4 +1,4 @@
-package ru.demo.task.repository.mappers;
+package ru.demo.task.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
