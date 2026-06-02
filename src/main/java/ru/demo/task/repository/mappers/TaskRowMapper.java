@@ -46,6 +46,6 @@ public class TaskRowMapper {
                 tasks.add(task);
             }
         }
-        return null;
+        return tasks;
     }
 }
