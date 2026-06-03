@@ -8,10 +8,7 @@ import ru.demo.task.repository.DataSourceConfig;
 import ru.demo.task.repository.TaskRepository;
 import ru.demo.task.repository.mappers.TaskRowMapper;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +35,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             where t.id = ?
             """;
 
-    private final String ASSIGNED_BY_USER_ID = """
+    private final String ASSIGN = """
             INSERT INTO users_tasks(task_id, user_id)
             VALUES (?, ?)
             """;
@@ -91,17 +88,63 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public void assignToUserById(Long taskId, Long userId) {
-
+        try {
+            Connection connection = dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(ASSIGN);
+            statement.setLong(1, userId);
+            statement.setLong(2, userId);
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throw new ResourceMappingException("Error while assigned to user");
+        }
     }
 
     @Override
     public void update(Task task) {
-
+        try {
+            Connection connection = dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(UPDATE);
+            statement.setString(1, task.getTitle());
+            if (task.getDescription() == null) {
+                statement.setNull(2, Types.VARCHAR);
+            } else {
+                statement.setString(2, task.getDescription());
+            }
+            if (task.getExpirationDate() == null) {
+                statement.setNull(3, Types.TIMESTAMP);
+            } else {
+                statement.setTimestamp(3, Timestamp.valueOf(task.getExpirationDate()));
+            }
+            statement.setString(4, task.getStatus().name());
+            statement.setLong(5, task.getId());
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throw new ResourceMappingException("Error while updating to user");
+        }
     }
 
     @Override
     public void create(Task task) {
-
+        try {
+            Connection connection = dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(CREATE, PreparedStatement.RETURN_GENERATED_KEYS);
+            statement.setString(1, task.getTitle());
+            if (task.getDescription() == null) {
+                statement.setNull(2, Types.VARCHAR);
+            } else {
+                statement.setString(2, task.getDescription());
+            }
+            if (task.getExpirationDate() == null) {
+                statement.setNull(3, Types.TIMESTAMP);
+            } else {
+                statement.setTimestamp(3, Timestamp.valueOf(task.getExpirationDate()));
+            }
+            statement.setString(4, task.getStatus().name());
+            statement.setLong(5, task.getId());
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throw new ResourceMappingException("Error while updating to user");
+        }
     }
 
     @Override
