@@ -140,15 +140,25 @@ public class TaskRepositoryImpl implements TaskRepository {
                 statement.setTimestamp(3, Timestamp.valueOf(task.getExpirationDate()));
             }
             statement.setString(4, task.getStatus().name());
-            statement.setLong(5, task.getId());
             statement.executeUpdate();
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                rs.next();
+                task.setId(rs.getLong(1));
+            }
         } catch (SQLException throwables) {
-            throw new ResourceMappingException("Error while updating to user");
+            throw new ResourceMappingException("Error while updating to task");
         }
     }
 
     @Override
     public void delete(Long id) {
-
+        try {
+            Connection connection = dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(DELETE);
+            statement.setLong(1, id);
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throw new ResourceMappingException("Error while deleting task");
+        }
     }
 }
