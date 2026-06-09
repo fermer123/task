@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -18,7 +19,7 @@ import ru.demo.task.web.security.JwtTokenFilter;
 import ru.demo.task.web.security.JwtTokenProvider;
 
 @EnableWebSecurity
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @__(@Lazy))
 @Configuration
 public class ApplicationConfig {
     private final ApplicationContext applicationContext;
