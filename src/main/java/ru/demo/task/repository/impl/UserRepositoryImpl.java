@@ -153,7 +153,6 @@ public class UserRepositoryImpl implements UserRepository {
             PreparedStatement statement = connection.prepareStatement(INSERT_USER_ROLE);
             statement.setLong(1, userId);
             statement.setString(2, role.name());
-            statement.setString(3, user.getPassword());
             statement.executeUpdate();
         } catch (SQLException throwables) {
             throw new ResourceMappingException("Exeption while inserting user role.");
