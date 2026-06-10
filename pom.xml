@@ -30,7 +30,6 @@
         <java.version>25</java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <jakarta.validation.version>3.0.2</jakarta.validation.version>
-        <liquibase.version>5.0.3</liquibase.version>
     </properties>
     <dependencies>
         <dependency>
@@ -135,10 +134,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-liquibase</artifactId>
         </dependency>
 
         <dependency>

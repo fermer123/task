@@ -1,7 +1,6 @@
 package ru.demo.task.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -22,7 +21,13 @@ import ru.demo.task.web.security.JwtTokenProvider;
 @RequiredArgsConstructor(onConstructor_ = @__(@Lazy))
 @Configuration
 public class ApplicationConfig {
-    private final ApplicationContext applicationContext;
+    private static final String[] SWAGGER_WHITELIST = {
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml"
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,16 +42,12 @@ public class ApplicationConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity, JwtTokenProvider tokenProvider) throws Exception {
         httpSecurity
-                // 1. Отключаем CSRF и настраиваем CORS через лямбды
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
-                // 2. Отключаем Basic Auth
                 .httpBasic(httpBasic -> httpBasic.disable())
-                // 3. Настройка сессий (Stateless для JWT)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // 4. Обработка ошибок (Исправлены опечатки и методы)
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -57,14 +58,12 @@ public class ApplicationConfig {
                             response.getWriter().write("Forbidden");
                         })
                 )
-                // 5. Настройка прав доступа
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // 6. Отключение анонимных пользователей
                 .anonymous(anonymous -> anonymous.disable())
-                // 7. Добавление твоего JWT фильтра
                 .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }

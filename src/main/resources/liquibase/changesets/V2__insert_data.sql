@@ -1,3 +1,5 @@
+--liquibase formatted sql
+
 --changeset V2_insert_data:1
 SET search_path TO tasklist;
 
