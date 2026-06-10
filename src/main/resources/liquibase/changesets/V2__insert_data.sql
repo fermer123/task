@@ -1,6 +1,5 @@
---liquibase formatted sql
-
 --changeset V2_insert_data:1
+SET search_path TO tasklist;
 
 TRUNCATE TABLE users_roles, users_tasks, tasks, users RESTART IDENTITY CASCADE;
 

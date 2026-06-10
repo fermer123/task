@@ -4,6 +4,8 @@
 
 CREATE SCHEMA IF NOT EXISTS tasklist;
 
+SET search_path TO tasklist;
+
 CREATE TABLE IF NOT EXISTS users
 (
     id       BIGSERIAL PRIMARY KEY,
