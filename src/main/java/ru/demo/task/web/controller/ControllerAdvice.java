@@ -2,6 +2,7 @@ package ru.demo.task.web.controller;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -42,6 +43,12 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExeptionBody handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
         return new ExeptionBody("Validation failed");
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExeptionBody handleAuthentication(AuthenticationException e) {
+        return new ExeptionBody("Authentication failed");
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
