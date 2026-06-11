@@ -6,7 +6,7 @@ SET search_path TO tasklist;
 TRUNCATE TABLE users_roles, users_tasks, tasks, users RESTART IDENTITY CASCADE;
 
 INSERT INTO users (name, username, password)
-VALUES ('John Doe', 'john@mail.ru', '$2a$10$MZagFd5.nZAqUySu7QQRXey7DblYyr2G0xnFk.tYcbuScZgWvVjw6'),
+VALUES ('John Doe', 'john@mail.ru', '$2a$12$n1.tG94CjbZJTPDy7Q6oOusdwp2TjJB5tz5rA1eS9RJSsVomjibN.'),
        ('Mike Smt', 'mike_smt@mail.com', '$2a$10$MZagFd5.nZAqUySu7QQRXey7DblYyr2G0xnFk.tYcbuScZgWvVjw6'),
        ('Anna Smith', 'anna@gmail.com', '$2a$10$MZagFd5.nZAqUySu7QQRXey7DblYyr2G0xnFk.tYcbuScZgWvVjw6');
 

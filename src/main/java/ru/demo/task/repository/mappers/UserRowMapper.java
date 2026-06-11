@@ -16,7 +16,10 @@ public class UserRowMapper {
     public static User mapRow(ResultSet resultSet) {
         Set<Role> roles = new HashSet<>();
         while (resultSet.next()) {
-            roles.add(Role.valueOf(resultSet.getString("user_user_role")));
+            String role = resultSet.getString("user_role");
+            if (role != null) {
+                roles.add(Role.valueOf(role));
+            }
         }
         resultSet.beforeFirst();
         List<Task> tasks = TaskRowMapper.mapRows(resultSet);
@@ -24,7 +27,7 @@ public class UserRowMapper {
         if (resultSet.next()) {
             User user = new User();
             user.setId(resultSet.getLong("user_id"));
-            user.setName(resultSet.getString("use_name"));
+            user.setName(resultSet.getString("user_name"));
             user.setUsername(resultSet.getString("user_username"));
             user.setPassword(resultSet.getString("user_password"));
             user.setRoles(roles);

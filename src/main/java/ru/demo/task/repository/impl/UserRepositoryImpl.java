@@ -21,38 +21,38 @@ public class UserRepositoryImpl implements UserRepository {
     private final DataSourceConfig dataSourceConfig;
 
     private final String FIND_BY_ID = """
-             SELECT t.id as user_id,
+             SELECT u.id as user_id,
             	   u.name as user_name,
-            	   u.username as user_name,
+            	   u.username as user_username,
             	   u.password as user_password,
-            	   u.role as user_role_role,
+            	   r.role as user_role,
             	   t.id as task_id,
-            	   t.tile as task_title,
-            	   t.desciption as task_description,
+            	   t.title as task_title,
+            	   t.description as task_description,
             	   t.expiration_date as task_expiration_date,
             	   t.status as task_status
             from users u
             left join users_roles r on u.id = r.user_id
             left join users_tasks ut on u.id = ut.user_id
-            left join tasks r on u.task_id = t.id
+            left join tasks t on ut.task_id = t.id
             where u.id = ?
             """;
 
     private final String FIND_BY_USERNAME = """
-               SELECT t.id as user_id,
+               SELECT u.id as user_id,
                         	   u.name as user_name,
-                        	   u.username as user_name,
+                        	   u.username as user_username,
                         	   u.password as user_password,
-                        	   u.role as user_role_role,
+                        	   r.role as user_role,
                         	   t.id as task_id,
-                        	   t.tile as task_title,
-                        	   t.desciption as task_description,
+                        	   t.title as task_title,
+                        	   t.description as task_description,
                         	   t.expiration_date as task_expiration_date,
                         	   t.status as task_status
                         from users u
                         left join users_roles r on u.id = r.user_id
                         left join users_tasks ut on u.id = ut.user_id
-                        left join tasks r on u.task_id = t.id
+                        left join tasks t on ut.task_id = t.id
                         where u.username = ?
             """;
 
@@ -60,13 +60,13 @@ public class UserRepositoryImpl implements UserRepository {
             update users
             SET name = ?,
             username = ?,
-            password = ?,
+            password = ?
             where id = ?
             """;
 
     private final String CREATE = """
             insert into users(name, username, password)
-            values = (?,?,?)
+            values (?, ?, ?)
             """;
 
     private final String INSERT_USER_ROLE = """
@@ -123,6 +123,7 @@ public class UserRepositoryImpl implements UserRepository {
             statement.setString(2, user.getUsername());
             statement.setString(3, user.getPassword());
             statement.setLong(4, user.getId());
+            statement.executeUpdate();
         } catch (SQLException throwables) {
             throw new ResourceMappingException("Exeption while update user.");
         }
@@ -167,8 +168,7 @@ public class UserRepositoryImpl implements UserRepository {
             statement.setLong(1, userId);
             statement.setLong(2, taskId);
             try (ResultSet rs = statement.executeQuery()) {
-                rs.next();
-                return rs.getBoolean(1);
+                return rs.next();
             }
         } catch (SQLException throwables) {
             throw new ResourceMappingException("Exeption while check user is task owner.");

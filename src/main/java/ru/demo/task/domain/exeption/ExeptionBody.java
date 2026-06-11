@@ -1,13 +1,16 @@
 package ru.demo.task.domain.exeption;
 
+import lombok.Data;
+
 import java.util.Map;
 
-public class ExeptionBody extends Exception {
+@Data
+public class ExeptionBody {
     private String message;
     private Map<String, String> errors;
 
 
     public ExeptionBody(String message) {
-        super(message);
+        this.message = message;
     }
 }
