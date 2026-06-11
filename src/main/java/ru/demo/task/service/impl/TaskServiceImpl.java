@@ -1,5 +1,6 @@
 package ru.demo.task.service.impl;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Operation(summary = "Add task to user")
     public Task update(Task task) {
         if (task.getStatus() == null) {
             task.setStatus(Status.TODO);
