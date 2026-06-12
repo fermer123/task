@@ -5,8 +5,6 @@ import ru.demo.task.domain.user.User;
 import ru.demo.task.web.dto.user.UserDto;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
-    UserDto toDto(User user);
+public interface UserMapper extends Mappable<User, UserDto> {
 
-    User toEntity(UserDto userDto);
 }

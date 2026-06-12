@@ -32,4 +32,6 @@ public class User {
     @OneToMany
     @JoinColumn(name = "task_id")
     private List<Task> tasks;
+
+    
 }

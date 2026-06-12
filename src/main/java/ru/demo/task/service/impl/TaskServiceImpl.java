@@ -2,11 +2,13 @@ package ru.demo.task.service.impl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.demo.task.domain.exeption.ResourceNotFoundException;
 import ru.demo.task.domain.task.Status;
 import ru.demo.task.domain.task.Task;
+import ru.demo.task.domain.task.TaskImage;
 import ru.demo.task.domain.user.User;
 import ru.demo.task.repository.TaskRepository;
 import ru.demo.task.service.TaskService;
@@ -57,5 +59,14 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void delete(Long id) {
         taskRepository.deleteById(id);
+    }
+
+    @Transactional
+    @CacheEvict(value = "TaskService: getById", key = "#id")
+    public void uploadImage(Long id, TaskImage image) {
+        Task task = taskRepository.getById(id);
+        String fileName = imageService.upload(image);
+        task.getImages().add(fileName);
+        taskRepository.save(task);
     }
 }
