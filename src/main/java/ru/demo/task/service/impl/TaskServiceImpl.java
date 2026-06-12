@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.demo.task.domain.exeption.ResourceNotFoundException;
 import ru.demo.task.domain.task.Status;
 import ru.demo.task.domain.task.Task;
+import ru.demo.task.domain.user.User;
 import ru.demo.task.repository.TaskRepository;
 import ru.demo.task.service.TaskService;
+import ru.demo.task.service.UserService;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = true)
@@ -36,22 +39,23 @@ public class TaskServiceImpl implements TaskService {
         if (task.getStatus() == null) {
             task.setStatus(Status.TODO);
         }
-        taskRepository.update(task);
+        taskRepository.save(task);
         return task;
     }
 
     @Override
     @Transactional
     public Task create(Task task, Long userId) {
+        User user = userService.getById(userId);
         task.setStatus(Status.TODO);
-        taskRepository.create(task);
-        taskRepository.assignToUserById(task.getId(), userId);
+        user.getTasks().add(task);
+        userService.update(user);
         return task;
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        taskRepository.delete(id);
+        taskRepository.deleteById(id);
     }
 }

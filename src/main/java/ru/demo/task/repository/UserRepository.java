@@ -1,23 +1,23 @@
 package ru.demo.task.repository;
 
-import ru.demo.task.domain.user.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.demo.task.domain.user.User;
 
 import java.util.Optional;
 
 
-public interface UserRepository {
-    Optional<User> findById(Long id);
+public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
+    
+    @Query(value = """
+            select 1
+            from users_tasks
+            where user_id = :userId
+            and task_id = :taskId
+            """, nativeQuery = true)
+    boolean isTaskOwner(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
-    void update(User user);
-
-    void create(User user);
-
-    void insertUserRole(Long userId, Role role);
-
-    boolean isTaskOwner(Long userId, Long taskId);
-
-    void delete(Long id);
 }
